@@ -1,0 +1,17 @@
+/* style.css */
+#start-menu {
+    width: 1400;
+    height: 1000;
+    background-color: #8c52ff;
+    color: white;
+    text-align: center;
+    padding: 165px 255px;
+}
+
+.button {
+    background-color: #ffffff;
+    color: #8c52ff;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+}
