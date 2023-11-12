@@ -18,12 +18,12 @@
             <form action="#">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="person"></ion-icon></span>
-                    <input type="text" required>
+                    <input id="username" type="text" required>
                     <label>Username</label>
                 </div>
                 
                 
-                <button type="submit" class="btn">Login</button>
+                <button class="btn" id="submitButton">Login</button>
                 
             </form>
         </div>
@@ -32,5 +32,15 @@
     <script src="code.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        // This click event handler prevents the default behavior of a link
+        $('button').on('click', function(event) {
+            event.preventDefault(); // This line prevents the default behavior of the link
+            // Other code...
+            window.localStorage.setItem("username", $("#username").val());
+            window.location = "../Pong/";
+        });
+    </script>
 </body>
 </html>
