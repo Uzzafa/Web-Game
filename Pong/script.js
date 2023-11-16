@@ -16,6 +16,9 @@ var DIRECTION = {
     LEFT: 3,
     RIGHT: 4
 };
+
+var player_score = 0;
+var enemy_score = 0;
  
 var rounds = [5, 5, 3, 3, 2];
 var colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
@@ -131,6 +134,8 @@ var Game = {
  
     // Update all objects (move the player, ai, ball, increment the score, etc.)
     update: function () {
+        console.log(`round score: ${this.player.score} - ${this.ai.score} \ntotal score: ${player_score} - ${enemy_score}`);
+
         if (!this.over) {
             // If the ball collides with the bound limits - correct the x and y coords.
             if (this.ball.x <= 0) Pong._resetTurn.call(this, this.ai, this.player);
@@ -201,21 +206,28 @@ var Game = {
             // there are not.
             if (!rounds[this.round + 1]) {
                 this.over = true;
+                createRecord(this.round + 1, player_score + this.player.score, enemy_score + this.ai.score);
                 setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
             } else {
                 // If there is another round, reset all the values and increment the round number.
+                player_score += this.player.score;
+                enemy_score += this.ai.score;
                 this.color = this._generateRoundColor();
                 this.player.score = this.ai.score = 0;
                 this.player.speed += 0.5;
                 this.ai.speed += 1;
                 this.ball.speed += 1;
                 this.round += 1;
- 
             }
         }
         // Check to see if the ai/AI has won the round.
         else if (this.ai.score === rounds[this.round]) {
             this.over = true;
+            if (this.round == 0) {
+                createRecord(this.round + 1, this.player.score, this.ai.score);
+            } else {
+                createRecord(this.round + 1, player_score + this.player.score, enemy_score + this.ai.score);
+            }
             setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
         }
     },
@@ -369,3 +381,33 @@ var Game = {
  
 var Pong = Object.assign({}, Game);
 Pong.initialize();
+
+function createRecord(round, player_score, enemy_score) {
+    var record = {
+        'username': window.localStorage.getItem("username"),
+        'round': round,
+        'player_score': player_score,
+        'enemy_score': enemy_score,
+        'created_at': Date.now()
+    }
+
+    $.ajax({
+        url: '../system/create.php', // Replace with your server endpoint
+        method: 'POST',
+        data: record, // Data to send to the server
+        success: function (response) {
+            // Handle the server response if needed
+            console.log(record);
+            console.log(response);
+            $("#inputModalButton").hide();
+            window.location = "../Splash/";
+        },
+        error: function (xhr, status, error) {
+            // Handle errors if any
+            console.log(record);
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
+        }
+    });
+}
